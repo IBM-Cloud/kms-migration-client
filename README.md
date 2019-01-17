@@ -1,5 +1,5 @@
 
-# migration-client
+# kms-migration-client
 
 [![Build Status](https://travis-ci.org/locke105/ibm-kms-migration-client.svg?branch=master)](https://travis-ci.org/locke105/ibm-kms-migration-client)
 
@@ -7,7 +7,7 @@ IBM® Key Protect service instances provisioned before 15 December 2017 are runn
 
 Use this go client to migrate your existing encryption keys into a new Key Protect service instance, so that you may take advantage of the latest IBM Cloud platform functionalities, enhanced security, and expanded availability of our service.
 
->**Note:** This utility requires the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/reference/ibmcloud/download_cli.html#install_use) as a prerequisite.
+>**Note:** This utility requires the [IBM Cloud CLI](https://cloud.ibm.com/docs/cli/reference/ibmcloud/download_cli.html#install_use) as a prerequisite.
 
 ## How it works
 
@@ -16,11 +16,11 @@ This utility looks for active Key Protect keys that are stored within the specif
 Keep in mind the following updates:
 
 - **The identifying information for each key, such as the key metadata and the key ID, will be different after the key is migrated into the new Key Protect service instance.** The client migrates only the key material (the `payload` value) for each encryption key. To run the migrated keys on your existing applications, you must update any references to the old key IDs so that they reflect the new key ID values.  
-- **You must update your applications to handle the newly base64 encoded key payloads.** New Key Protect service instances require the `payload` value for each key will to be encoded to base64. This client handles base64 encoding on your behalf as part of the migration process, but you will need to handle decoding the payload in your application when you retrieve keys from the new instance.
-- **The new KeyProtect instances will only be accessible with IAM tokens.** CloudFoundry/UAA tokens will not work with the new instances, and have been deprecated in the legacy instances already. If you are already using IAM tokens in legacy instances, there shouldn't be any changes needed, other than ensuring IAM Access Policies are updated for access to the new KeyProtect instance.
-- **You will need to update your application(s) to use the new US-SOUTH region endpoint for KeyProtect.** Other than the IAM and base64 payloads mentioned above, the API remains compatible between legacy and new instances. However the new instances must be accessed through the new US-SOUTH region endpoint, `https://keyprotect.us-south.bluemix.net/`. Generally, this should be a simple change to the host portion of the URL in configuration or the application code. i.e. `https://ibm-key-protect.edge.bluemix.net/api/v2/keys` will become `https://keyprotect.us-south.bluemix.net/api/v2/keys`
+- **You must update your applications to handle base64 encoded key payloads.** This client handles base64 encoding on your behalf as part of the migration process. If you want to store more keys in the new service instance, you must update your applications to [handle the base64 encoding requirement](#handling-the-base64-encoding-requirement).
+- **You must use Cloud IAM access tokens to access a new Key Protect service instance.** Cloud Foundry (UAA) tokens are now deprecated for older service instances, and they can no longer be used to access Key Protect. If you are already using Cloud IAM access tokens in your legacy service instance, ensure that your IAM access policies are updated to access the new Key Protect instance.
+- **You must update your applications to use a regional endpoint.** Other than the Cloud IAM and base64 encoding changes mentioned above, the Key Protect API remains compatible between legacy and new instances. However, you must access a new Key Protect service instance by using a new regional endpoint. Generally, this will be a change to the host portion of the URL in configuration or application code (for example, `https://ibm-key-protect.edge.bluemix.net/api/v2/keys` changes to `https://keyprotect.us-south.bluemix.net/api/v2/keys`).
 
-For more details on these changes and how to update your application, please check the [Updating your applications](#updating-your-applications) section.
+>For more details on these changes, check out [Updating your applications](#updating-your-applications).
 
 After the migration completes, the client populates your new Key Protect service instance with your migrated encryption keys and creates a `migration.csv` file that shows how the old key IDs map to the migrated keys for easy identification.
 
@@ -32,21 +32,21 @@ To work with Key Protect keys that are stored in a Cloud Foundry space:
 
 - You must have access to the IBM Cloud account where your Key Protect service instance was initially provisioned.
 
-- You must be assigned the appropriate Cloud Foundry access role to view and retrieve Key Protect resources within your IBM Cloud account. For example, if you are assigned a _Developer_ access role, you can retrieve the Key Protect keys that are stored in a Cloud Foundry space. To learn more about viewing your existing Cloud Foundry access policy, see [Cloud Foundry access](https://console.bluemix.net/docs/iam/cfaccess.html#cfaccess).
+- You must be assigned the appropriate Cloud Foundry access role to view and retrieve Key Protect resources within your IBM Cloud account. For example, if you are assigned a _Developer_ access role, you can retrieve the Key Protect keys that are stored in a Cloud Foundry space. To learn more about viewing your existing Cloud Foundry access policy, see [Cloud Foundry access](https://cloud.ibm.com/docs/iam/cfaccess.html#cfaccess).
 
 To move keys into a new instance of Key Protect:
 
-- You must have a new Key Protect service instance provisioned within your IBM Cloud account. To learn more about creating a new Key Protect service instance, see [Provisioning the service](https://console.bluemix.net/docs/services/key-protect/provision.html#provision).
+- You must have a new Key Protect service instance provisioned within your IBM Cloud account. To learn more about creating a new Key Protect service instance, see [Provisioning the service](https://cloud.ibm.com/docs/services/key-protect/provision.html#provision).
 
-- New instances of Key Protect use Cloud Identity and Access Management (IAM) for access control. You must be assigned the appropriate Cloud IAM access role to view and create resources within the new Key Protect service instance.  If you are assigned a _Manager_ or _Writer_ Cloud IAM role, you can view and create keys in your new Key Protect service instance. To learn more about viewing your existing Cloud IAM access policy, see [Working with users](https://console.bluemix.net/docs/iam/iamusermanage.html#iamusermanage).
+- New instances of Key Protect use Cloud Identity and Access Management (IAM) for access control. You must be assigned the appropriate Cloud IAM access role to view and create resources within the new Key Protect service instance.  If you are assigned a _Manager_ or _Writer_ Cloud IAM role, you can view and create keys in your new Key Protect service instance. To learn more about viewing your existing Cloud IAM access policy, see [Working with users](https://cloud.ibm.com/docs/iam/iamusermanage.html#iamusermanage).
 
 ## Setting up the migration client
 
-### Download the latest migration-client 
+### Download the latest client
 
-1. Download the latest release of migration-client for your platform from the [Releases page](https://github.com/locke105/ibm-kms-migration-client/releases)
+1. Download the [latest release](https://github.com/IBM-Cloud/kms-migration-client/releases) of the migration client.
 
-2. Unzip the release and move into the newly created directory to begin working with the migration client.
+2. Unzip the release, and then change into a newly created directory to begin working with the migration client.
 
     ```sh
     unzip migration-client-linux-amd64.zip -d migration-client
@@ -55,21 +55,21 @@ To move keys into a new instance of Key Protect:
 
 ### Gather required information
 
-Gather the Org and Space information of your legacy Key Protect service instance:
+Gather the Cloud Foundry org and space information of your legacy Key Protect service instance:
 
-1. [Log in to the IBM Cloud console](https://console.bluemix.net).
+1. [Log in to the IBM Cloud console](https://cloud.ibm.com).
 
 2. From your user profile, select the account that contains the Cloud Foundry org and space where your legacy Key Protect service instance resides.
 
-3. From the IBM Cloud dashboard, navigate to **Cloud Foundry Services**, and then find the Key Protect service instance that contains the encryption keys that you want to migrate.
+3. From the [Resource list](https://cloud.ibm.com/resources), navigate to **Cloud Foundry Services**, and then find the Key Protect service instance that contains the encryption keys that you want to migrate.
 
-    Note the **CF Org** and **CF Space** names that are associated with the legacy Key Protect service. You'll need to set these names as environment variables in a later step.
+    Note the **Org** and **Space** names that are associated with the legacy Key Protect service. You'll need to set these names as environment variables in a later step.
 
-Gather the service instace name of your new Key Protect service instance:
+Gather the service instance name of your new Key Protect service instance:
 
 1. In the IBM Cloud console, select the account and resource group where your new Key Protect service instance resides.
 
-2. From the IBM Cloud dashboard, navigate to **Services**, and then select the Key Protect service instance where you want to migrate your existing encryption keys.
+2. From the [Resource list](https://cloud.ibm.com/resources), navigate to **Services**, and then select the Key Protect service instance where you want to migrate your existing encryption keys.
 
     Note the name that is associated with your Key Protect service instance. You'll need to set this name as an environment variable in a later step.
 
@@ -84,11 +84,11 @@ Gather the service instace name of your new Key Protect service instance:
     export CF_ORG="<organization_name>"
     export CF_SPACE="<space_name>"
     
-    ## New KP account variables ##
+    ## New Key Protect account variables ##
     export KP_SERVICE_INSTANCE_NAME="<instance_name>"
     
-    # optional, set this if your new KeyProtect service instance is in a different IBM Cloud Account
-    #export KP_ACCOUNT_ID=""
+    # Optional. Set if your new Key Protect service instance is in a different IBM Cloud Account
+    # export KP_ACCOUNT_ID=""
     ```
 
     Replace `<organization_name>`, `<space_name>`, and `<instance_name>` with the values that you retrieved in the previous step.
@@ -112,7 +112,7 @@ Success! Your existing keys are now migrated into a new Key Protect service inst
 | ------------------------------------ | ------------------------------------ |
 | ef9eb687-b508-45f0-8a3e-1def949bc9f8 | e9ab551c-46fe-448a-8a3c-e0f23dfff362 |
 
-The Key Protect keys that are stored in your Cloud Foundry org and space remain in the legacy Key Protect service instance until you're ready to [permanently delete the keys, and then delete the legacy Key Protect service instance](https://console.bluemix.net/docs/services/key-protect/troubleshooting.html#unable-to-delete-service).
+The Key Protect keys that are stored in your Cloud Foundry org and space remain in the legacy Key Protect service instance until you're ready to [permanently delete the keys, and then delete the legacy Key Protect service instance](https://cloud.ibm.com/docs/services/key-protect/troubleshooting.html#unable-to-delete-service).
 
 > **Note:** If migration fails in the middle of moving keys, check the _migration.csv_ file to view the keys that were successfully migrated. To resume the migration process, be sure to save the _migration.csv file_, otherwise the client will move the keys again and create duplicate keys in the new instance. If you encounter more errors, check the `migration-client.log` to understand how to proceed.
 
@@ -134,7 +134,7 @@ curl -X GET \
     -H 'bluemix-instance: <instance_ID>'
 ```
 
-For more information, see the [Key Protect API reference](https://console.bluemix.net/apidocs/key-protect).
+For more information, see the [Key Protect API reference](https://cloud.ibm.com/apidocs/key-protect).
 
 ### Handling the base64 encoding requirement
 
@@ -164,4 +164,4 @@ After your migration and testing is complete, please notify the Key Protect team
 
 If you encounter a problem during a migration or in the regression tests of your applications, you can reach out to the IBM Key Protect team for help. Connect with the Key Protect development team by sending an e-mail to Terry Mosbaugh at mosbaugh@us.ibm.com.
 
-To find out more about the latest Key Protect service features, check out the [Key Protect service documentation](https://console.bluemix.net/docs/services/key-protect/index.html).
+To find out more about the latest Key Protect service features, check out the [Key Protect service documentation](https://cloud.ibm.com/docs/services/key-protect/index.html).
