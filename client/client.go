@@ -18,7 +18,7 @@ const legacy_uri = "https://ibm-key-protect.edge.bluemix.net/api/v2/keys"
 
 func getEndpoint(regionName string) string {
 	endpoints := map[string]string{
-		"us-south": "https://keyprotect.us-south.bluemix.net/api/v2/keys",
+		"us-south": "https://us-south.kms.cloud.ibm.com/api/v2/keys",
 	}
 	return endpoints[regionName]
 }
