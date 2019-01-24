@@ -18,7 +18,7 @@ Keep in mind the following updates:
 - **The identifying information for each key, such as the key metadata and the key ID, will be different after the key is migrated into the new Key Protect service instance.** The client migrates only the key material (the `payload` value) for each encryption key. To run the migrated keys on your existing applications, you must update any references to the old key IDs so that they reflect the new key ID values.  
 - **You must update your applications to handle base64 encoded key payloads.** This client handles base64 encoding on your behalf as part of the migration process. If you want to store more keys in the new service instance, you must update your applications to [handle the base64 encoding requirement](#handling-the-base64-encoding-requirement).
 - **You must use Cloud IAM access tokens to access a new Key Protect service instance.** Cloud Foundry (UAA) tokens are now deprecated for older service instances, and they can no longer be used to access Key Protect. If you are already using Cloud IAM access tokens in your legacy service instance, ensure that your IAM access policies are updated to access the new Key Protect instance.
-- **You must update your applications to use a regional endpoint.** Other than the Cloud IAM and base64 encoding changes mentioned above, the Key Protect API remains compatible between legacy and new instances. However, you must access a new Key Protect service instance by using a new regional endpoint. Generally, this will be a change to the host portion of the URL in configuration or application code (for example, `https://ibm-key-protect.edge.bluemix.net/api/v2/keys` changes to `https://keyprotect.us-south.bluemix.net/api/v2/keys`).
+- **You must update your applications to use a regional endpoint.** Other than the Cloud IAM and base64 encoding changes mentioned above, the Key Protect API remains compatible between legacy and new instances. However, you must access a new Key Protect service instance by using a new regional endpoint. Generally, this will be a change to the host portion of the URL in configuration or application code (for example, `https://ibm-key-protect.edge.bluemix.net/api/v2/keys` changes to `https://us-south.kms.cloud.ibm.com/api/v2/keys`).
 
 >For more details on these changes, check out [Updating your applications](#updating-your-applications).
 
@@ -122,13 +122,13 @@ To start using the new Key Protect service instance, update your applications so
 
 ### Connecting to the new service API endpoint
 
-Key Protect service instances that exist within a Cloud Foundry org or space use the legacy `https://ibm-key-protect.edge.bluemix.net` endpoint to interact with the Key Protect API. To interact with your new service instance, you must update any references to this endpoint to `https://keyprotect.<region>.bluemix.net`.
+Key Protect service instances that exist within a Cloud Foundry org or space use the legacy `https://ibm-key-protect.edge.bluemix.net` endpoint to interact with the Key Protect API. To interact with your new service instance, you must update any references to this endpoint to `https://<region>.kms.cloud.ibm.com`.
 
 For example, if you created your new service instance in the the US South region, use the following endpoint and API headers to browse keys in your service:
 
 ```cURL
 curl -X GET \
-    https://keyprotect.us-south.bluemix.net/api/v2/keys \
+    https://us-south.kms.cloud.ibm.com/api/v2/keys \
     -H 'accept: application/vnd.ibm.collection+json' \
     -H 'authorization: <IAM_token>' \
     -H 'bluemix-instance: <instance_ID>'
