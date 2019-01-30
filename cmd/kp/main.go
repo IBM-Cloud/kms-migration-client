@@ -49,7 +49,7 @@ func main() {
 		subcommand = args[0]
 	}
 
-	kp := keyprotect.NewKPClient(instanceId, iamToken)
+	kp := keyprotect.NewKPClient(instanceId, iamToken, "us-south")
 
 	switch subcommand {
 	case "list":

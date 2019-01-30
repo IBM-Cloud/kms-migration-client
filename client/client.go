@@ -19,6 +19,11 @@ const legacy_uri = "https://ibm-key-protect.edge.bluemix.net/api/v2/keys"
 func getEndpoint(regionName string) string {
 	endpoints := map[string]string{
 		"us-south": "https://us-south.kms.cloud.ibm.com/api/v2/keys",
+		"us-east":  "https://us-east.kms.cloud.ibm.com/api/v2/keys",
+		"eu-gb":    "https://eu-gb.kms.cloud.ibm.com/api/v2/keys",
+		"eu-de":    "https://eu-de.kms.cloud.ibm.com/api/v2/keys",
+		"au-syd":   "https://au-syd.kms.cloud.ibm.com/api/v2/keys",
+		"jp-tok":   "https://jp-tok.kms.cloud.ibm.com/api/v2/keys",
 	}
 	return endpoints[regionName]
 }
@@ -258,7 +263,7 @@ func NewLegacyClient(orgId string, spaceId string, uaaToken string) *Client {
 	}
 }
 
-func NewKPClient(instanceId string, iamToken string) *Client {
+func NewKPClient(instanceId, iamToken, region string) *Client {
 	return &Client{
 		Client: &http.Client{Timeout: 60 * time.Second},
 		Authenticator: KPAuthenticator{
@@ -266,6 +271,6 @@ func NewKPClient(instanceId string, iamToken string) *Client {
 			InstanceId: instanceId,
 		},
 		KeyPayloadCodec: KPPayloadCodec{},
-		uri:             getEndpoint("us-south"),
+		uri:             getEndpoint(region),
 	}
 }

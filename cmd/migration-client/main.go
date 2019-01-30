@@ -42,12 +42,14 @@ func main() {
 
 	var instanceId string
 	var iamToken string
+	var region string
 
 	flag.BoolVar(&flgVersion, "version", false, "if true, print version and exit")
 	flag.StringVar(&orgId, "org-id", "", "Org UUID for Legacy KP service")
 	flag.StringVar(&spaceId, "space-id", "", "Space UUID for Legacy KP service")
 	flag.StringVar(&instanceId, "instance-id", "", "Instance UUID for KP service")
 	flag.StringVar(&iamToken, "iam-token", "", "IAM Auth Token from Bluemix/IBM Cloud client")
+	flag.StringVar(&region, "region", "", "The region with new key protect instance if different")
 	flag.Parse()
 
 	if flgVersion {
@@ -67,6 +69,9 @@ func main() {
 	if iamToken == "" {
 		log.Fatalln("Must specify iam-token")
 	}
+	if region == "" {
+		region = "us-south"
+	}
 
 	if !strings.HasPrefix(iamToken, "bearer") && !strings.HasPrefix(iamToken, "Bearer") {
 		iamToken = "bearer " + iamToken
@@ -76,7 +81,7 @@ func main() {
 	if legacy == nil {
 		log.Fatalln("Failed to create legacy client")
 	}
-	kp := keyprotect.NewKPClient(instanceId, iamToken)
+	kp := keyprotect.NewKPClient(instanceId, iamToken, region)
 	if kp == nil {
 		log.Fatalln("Failed to create KP client")
 	}

@@ -21,6 +21,10 @@ bx target --cf-api https://api.ng.bluemix.net -o "$CF_ORG" -s "$CF_SPACE"
 ORG_ID=$(bx cf org "$CF_ORG" --guid | tail -n 1)
 SPACE_ID=$(bx cf space "$CF_SPACE" --guid | tail -n 1)
 
+#optional: change region with new legacy keyprotect instances
+# if your new instance is in the same region (likely), we can skip this
+[ -n "$KP_REGION" ] && bx target -r $KP_REGION
+
 # optional: log into account with new legacy keyprotect instance
 # if your new instance is in the same account (likely), we can skip this
 [ -n "$KP_ACCOUNT_ID" ] && bx target -c $KP_ACCOUNT_ID
@@ -34,7 +38,7 @@ IAM_TOKEN=$(bx iam oauth-tokens | awk '/IAM token:/ {print $3" "$4}')
 
 # kick off the migration with the information we gathered above
 echo "running: ./migration-client --org-id=$ORG_ID --space-id=$SPACE_ID --instance-id=$KP_SERVICE_INSTANCE_ID --iam-token=\"$IAM_TOKEN\""
-./migration-client --org-id="$ORG_ID" --space-id="$SPACE_ID" --instance-id="$KP_SERVICE_INSTANCE_ID" --iam-token="$IAM_TOKEN"
+./migration-client --org-id="$ORG_ID" --space-id="$SPACE_ID" --instance-id="$KP_SERVICE_INSTANCE_ID" --iam-token="$IAM_TOKEN" --region="$KP_REGION"
 if [ $? -eq 0 ]; then
     echo "migration-client completed successfully. check 'migration.csv' for keys that were migrated"
 else
