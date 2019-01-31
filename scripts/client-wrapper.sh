@@ -21,8 +21,8 @@ bx target --cf-api https://api.ng.bluemix.net -o "$CF_ORG" -s "$CF_SPACE"
 ORG_ID=$(bx cf org "$CF_ORG" --guid | tail -n 1)
 SPACE_ID=$(bx cf space "$CF_SPACE" --guid | tail -n 1)
 
-#optional: change region with new legacy keyprotect instances
-# if your new instance is in the same region (likely), we can skip this
+#optional: log in to region other than us-south with new legacy keyprotect instances 
+# if your new instance is in us-south region, we can skip this as the migration-client defaults the region to us-south
 [ -n "$KP_REGION" ] && bx target -r $KP_REGION
 
 # optional: log into account with new legacy keyprotect instance
