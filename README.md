@@ -83,12 +83,22 @@ Gather the service instance name of your new Key Protect service instance:
     ## Legacy account variables ##
     export CF_ORG="<organization_name>"
     export CF_SPACE="<space_name>"
-    
+
     ## New Key Protect account variables ##
     export KP_SERVICE_INSTANCE_NAME="<instance_name>"
-    
+
     # Optional. Set if your new Key Protect service instance is in a different IBM Cloud Account
     # export KP_ACCOUNT_ID=""
+
+    # Optional, can leave this variable blank("") if your new KeyProtect service instance is in us-south,
+    # the migration client defaults the region to us-south
+    # set this as following if your new KeyProtect service instance is in a different region other than us-south.
+    # for washington as "us-east"
+    # for london as "eu-gb"
+    # for frankfurt as "eu-de"
+    # for sydney as "au-syd"
+    # for japan as "jp-tok"
+    # export KP_REGION=""
     ```
 
     Replace `<organization_name>`, `<space_name>`, and `<instance_name>` with the values that you retrieved in the previous step.
