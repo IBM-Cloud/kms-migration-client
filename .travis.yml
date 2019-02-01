@@ -1,0 +1,19 @@
+language: go
+sudo: false
+matrix:
+  include:
+  - go: 1.10.x
+script:
+- make dist
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure:
+      secure: kEDgO8W3ddFuMc0ZaPWOlFUZX0DRWE7PcGRX8tnqkxFMvV8UeUghQ9iCFh2cRJukCu6ApYvRJ45jESCLAxquoQO2OeNEnKDkxmTGgCjZcvFQtkCdyn6dewev9P9jMLRr7zkRjqfe+OouQnhnT0XmRCI3NZJJiXQjc9CoDlQ1kIAg7ACEkqVwY8iCEKIjoJRttrVxlobMb0O8xcljHKOfuDlCEnZv6c0HH2QEQyjDGLhjQkZpJ9Y7oHHITYCv/Wr9F7+SJ2955bZuP7trJ48uWM9MXFm23UAYX+yp3jrFV9UPNM+mydzgvstT+/PKvKqIsemZOx1Kqe7ByZyyq40D5ldC8wu4kDzJ/ulm/jH+91WwSNctPyvQ1Wil+mLbfFdXxusdyhAkf6xMUpacVcYUMkYAL9H+si1iMVPmGzuKccQenEq7JgSLQZORZzRQyUijtPdA6DbIy8NU97D5yY8AqGC5d8ZrL3Ar3KPeCbFcY/2nJSwJWJ2QMCHH7eLRLBfM8Crv/yGztiKc3ELU0B9pplpHuwLJcJtJHnRqhdmcVLDFgA+l1gWdoOqArUGj66bkXe6sIvWAUi3udOErmjRKYcgmTvQKYCJvZin+l494kXNZ68bwkA48Pv1REx2S7s4gPK5Ovd7lB/cKCJa3pYuBueGgpG+x9K8yMdYqAwm9Crw=
+  file_glob: true
+  file:
+  - dist/*
+  on:
+    tags: true
+    repo: IBM-Cloud/kms-migration-client
