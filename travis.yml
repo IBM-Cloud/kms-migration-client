@@ -18,5 +18,4 @@ deploy:
     - dist/*
   on:
     tags: true
-    repo: locke105/ibm-kms-migration-client
-
+    repo: IBM-Cloud/kms-migration-client
