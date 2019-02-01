@@ -1,0 +1,21 @@
+## Legacy account variables ##
+export CF_ORG=""
+export CF_SPACE=""
+
+## New KP account variables ##
+export KP_SERVICE_INSTANCE_NAME=""
+
+# Optional, set this if your new KeyProtect service instance is in a different IBM Cloud Account
+export KP_ACCOUNT_ID=""
+
+# Optional. Set if your new Key Protect service instance is in a different region.
+# If your new Key Protect service instance is in us-south, omit this variable.
+#
+# Possible values:
+# "us-east" (Washington DC)
+# "eu-gb" (London)
+# "eu-de" (Frankfurt)
+# "au-syd" (Sydney)
+# "jp-tok" (Tokyo)
+#
+# export KP_REGION=""

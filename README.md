@@ -90,24 +90,16 @@ Gather the service instance name of your new Key Protect service instance:
     # Optional. Set if your new Key Protect service instance is in a different IBM Cloud Account
     # export KP_ACCOUNT_ID=""
 
-    # Optional. Set if your new Key Protect service instance is in a different region. 
-    # If your new Key Protect service instance is in us-south, omit this variable. 
+    # Optional. Set if your new Key Protect service instance is in a different region.
+    # If your new Key Protect service instance is in us-south, omit this variable.
     #
-    # Possible values: 
-    # "us-east" (Washington DC) 
+    # Possible values:
+    # "us-east" (Washington DC)
     # "eu-gb" (London)
     # "eu-de" (Frankfurt)
     # "au-syd" (Sydney)
     # "jp-tok" (Tokyo)
     #
-    # export KP_REGION=""
-    # the migration client defaults the region to us-south
-    # set this as following if your new KeyProtect service instance is in a different region other than us-south.
-    # for washington as "us-east"
-    # for london as "eu-gb"
-    # for frankfurt as "eu-de"
-    # for sydney as "au-syd"
-    # for japan as "jp-tok"
     # export KP_REGION=""
     ```
 
